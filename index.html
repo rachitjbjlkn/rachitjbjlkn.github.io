@@ -434,15 +434,117 @@
   }
   .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;}
   #hero{justify-content:space-between;}
+  /* ─── HAMBURGER MENU ─── */
+  .hamburger{
+    display:none;flex-direction:column;gap:5px;
+    cursor:pointer;padding:4px;z-index:200;
+  }
+  .hamburger span{
+    display:block;width:24px;height:2px;
+    background:var(--cyan);border-radius:2px;
+    transition:all 0.3s;
+  }
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-menu{
+    display:none;position:fixed;inset:0;
+    background:rgba(6,6,16,0.97);
+    backdrop-filter:blur(20px);
+    z-index:150;
+    flex-direction:column;align-items:center;justify-content:center;
+    gap:36px;
+  }
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{
+    color:var(--text);text-decoration:none;
+    font-size:1.4rem;letter-spacing:3px;text-transform:uppercase;
+    font-family:'Orbitron',sans-serif;
+    transition:color 0.2s;
+  }
+  .mobile-menu a:hover{color:var(--cyan);}
+
+  /* ─── LARGE DESKTOP ─── */
+  @media(min-width:1280px){
+    #hero,#about,#skills,#projects,#contact{padding:120px 80px;}
+    h1.hero-name{font-size:7rem;}
+  }
+
+  /* ─── TABLET ─── */
+  @media(max-width:1024px){
+    nav{padding:18px 32px;}
+    #hero,#about,#skills,#projects,#contact{padding:100px 40px;}
+    .projects-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+    .skills-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+    .hero-photo{width:200px;height:200px;}
+  }
+
+  /* ─── MOBILE ─── */
   @media(max-width:768px){
-    nav{padding:16px 24px;}
+    /* NAV */
+    nav{padding:16px 20px;}
     .nav-links{display:none;}
-    #hero,#about,#skills,#projects,#contact{padding:80px 24px;}
+    .hamburger{display:flex;}
+
+    /* HERO */
+    #hero{
+      padding:100px 20px 60px;
+      flex-direction:column-reverse;
+      align-items:center;
+      text-align:center;
+      gap:32px;
+    }
+    .hero-content{max-width:100%;}
+    .hero-photo-wrap{padding-right:0;padding-left:0;}
     .hero-photo{width:160px;height:160px;}
-    .hero-photo-wrap{padding-right:0;}
-    .about-grid{grid-template-columns:1fr;}
-    footer{padding:24px;flex-direction:column;gap:8px;text-align:center;}
-    .hero-scroll{left:24px;}
+    h1.hero-name{font-size:clamp(2.4rem,11vw,4rem);letter-spacing:-1px;}
+    .hero-title{font-size:0.85rem;}
+    .hero-desc{font-size:0.95rem;max-width:100%;}
+    .hero-cta{justify-content:center;}
+    .btn-primary,.btn-outline{padding:12px 22px;font-size:0.82rem;}
+    .hero-scroll{display:none;}
+
+    /* ABOUT */
+    #about{padding:80px 20px;}
+    .about-grid{grid-template-columns:1fr;gap:32px;}
+    .about-stats{grid-template-columns:1fr 1fr;}
+
+    /* SKILLS */
+    #skills{padding:80px 20px;}
+    .skills-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px;}
+    .skill-card{padding:20px 12px;}
+    .skill-icon{font-size:1.8rem;}
+    .skill-name{font-size:0.72rem;}
+
+    /* PROJECTS */
+    #projects{padding:80px 20px;}
+    .projects-grid{grid-template-columns:1fr;gap:18px;}
+    .project-card{padding:24px;}
+    .project-name{font-size:0.9rem;}
+
+    /* CONTACT */
+    #contact{padding:80px 20px;}
+    .contact-links{flex-direction:column;align-items:center;}
+    .contact-card{width:100%;max-width:320px;justify-content:center;}
+
+    /* SECTION TITLES */
+    .section-title{font-size:clamp(1.6rem,6vw,2.2rem);margin-bottom:32px;}
+
+    /* FOOTER */
+    footer{
+      padding:20px;
+      flex-direction:column;gap:6px;text-align:center;
+    }
+  }
+
+  /* ─── SMALL MOBILE ─── */
+  @media(max-width:400px){
+    h1.hero-name{font-size:2.2rem;}
+    .hero-cta{flex-direction:column;align-items:center;}
+    .btn-primary,.btn-outline{width:100%;justify-content:center;}
+    .about-stats{grid-template-columns:1fr;}
+    .skills-grid{grid-template-columns:repeat(2,1fr);}
   }
 </style>
 </head>
@@ -462,7 +564,18 @@
     <a href="#projects">Projects</a>
     <a href="#contact">Contact</a>
   </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about"    onclick="closeMenu()">About</a>
+  <a href="#skills"   onclick="closeMenu()">Skills</a>
+  <a href="#projects" onclick="closeMenu()">Projects</a>
+  <a href="#contact"  onclick="closeMenu()">Contact</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -821,7 +934,7 @@ function loop(){
 loop();
 
 // ─── TYPING EFFECT ───
-const phrases=['ML & DL Engineer','Python Developer','React Developer','AI Enthusiast','Problem Solver'];
+const phrases=['ML & DL Engineer','Python Developer','Data Analyst','React Developer','AI Enthusiast','Problem Solver'];
 let pi=0,ci=0,deleting=false;
 const typedEl=document.getElementById('typed-text');
 function type(){
@@ -853,6 +966,19 @@ const observer=new IntersectionObserver(entries=>{
   });
 },{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+
+// ─── HAMBURGER MENU ───
+function toggleMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 // ─── NAV SHADOW ON SCROLL ───
 window.addEventListener('scroll',()=>{
